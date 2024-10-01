@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useState } from "react"
 import toast from "react-hot-toast";
@@ -54,7 +55,7 @@ export const Login = () => {
 
     
   return (
-    <Layout title="Register - Ecommer App">
+    <Layout title="Login - Ecommer App">
       <div className="form-container ">
         <form onSubmit={handleSubmit}>
           <h4 className="title">LOGIN FORM</h4>

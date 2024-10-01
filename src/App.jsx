@@ -6,11 +6,12 @@ import Policy from "./pages/Policy"
 import Contact from "./pages/Contact"
 import Registre from "./pages/auth/Registre"
 
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Login } from "./pages/auth/Login"
 import Dashboard from "./pages/user/dashboard"
 import { Private } from "./components/Routes/Private"
+import AdminDashboard from "./pages/admin/AdminDashboard"
+import AdminRoute from "./components/Routes/AdminRoutes"
 
 function App() {
 
@@ -22,8 +23,12 @@ function App() {
         <Route path='/register' element={<Registre />} />
 
         <Route path='/dashboard' element={<Private />} >
-          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='user' element={<Dashboard />} />
 
+        </Route>
+
+        <Route path='/dashboard' element={<AdminRoute/>} >
+            <Route path='admin' element={<AdminDashboard />}/>
         </Route>
 
         <Route path='/login' element={<Login />} />

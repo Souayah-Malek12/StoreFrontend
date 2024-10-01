@@ -51,11 +51,15 @@ const Header = () => {
               
               {
   auth.user ? (  
-    <li className="nav-item">
-      <NavLink onClick={handleLogout} to="/" className="nav-link">
-        Logout
-      </NavLink>
-    </li>
+    <div className="dropdown">
+      <button className="btn  dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {auth?.user?.userName}
+      </button>
+      <ul className="dropdown-menu">
+        <li><a className="dropdown-item" onClick={handleLogout}>Logout</a></li>
+        <li><NavLink to={auth?.user?.role === 0 ? "/dashboard/user" : "/dashboard/admin"}>Dashboard</NavLink></li>
+      </ul>
+    </div>
   ) : (  
     <>
       <li className="nav-item">

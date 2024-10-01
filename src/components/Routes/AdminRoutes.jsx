@@ -5,9 +5,10 @@ import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import Spinner from '../spinner';
 
-export const Private = () => {
+export const AdminRoute = () => {
 
     const [ok , setOk] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [auth, setAuth] = useAuth()
 
 
@@ -17,7 +18,7 @@ export const Private = () => {
         const checkAuth = async() => {
             try{
 
-        const res = await axios.get(' http://localhost:3000/api/v1/auth/user-auth')
+        const res = await axios.get(' http://localhost:3000/api/v1/auth/admin-auth')
 
         
 
@@ -46,4 +47,4 @@ export const Private = () => {
   )
 }
 
-export default Private;
+export default AdminRoute;

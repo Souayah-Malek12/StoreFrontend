@@ -1,10 +1,12 @@
+import AdminMenu from '../../components/Layouts/AdminMenu';
 import Layout from '../../components/Layouts/Layout'
 
 export const AdminDashboard = () => {
   return (
     <Layout title={"Admin Dashboard"} >
-            <h1>hhhhhhh</h1>
-            <h2>Amiiiiiin</h2>
+      <div>
+            <AdminMenu />
+      </div>
     </Layout>
   )
 }

@@ -1,0 +1,36 @@
+/* Admin Menu Styling */
+.admin-menu-container {
+    position: fixed;
+    top: 80px; /* Adjust this value based on your header height */
+    left: 0;
+    width: 250px; /* Fixed width for sidebar */
+    padding: 20px;
+    background-color: #f8f9fa;
+    height: calc(100vh - 80px); /* Full height, minus header height */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #ddd;
+  }
+  
+  .admin-panel-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #343a40;
+  }
+  
+  .list-group-item {
+    padding: 15px;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .list-group-item:hover {
+    background-color: #e9ecef;
+  }
+  
+  .list-group-item-action {
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  

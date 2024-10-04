@@ -12,6 +12,7 @@ import Dashboard from "./pages/user/dashboard"
 import { Private } from "./components/Routes/Private"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminRoute from "./components/Routes/AdminRoutes"
+import CreateCategory from "./pages/admin/CreateCategory"
 
 function App() {
 
@@ -19,8 +20,8 @@ function App() {
      <>
      <BrowserRouter>
      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/register' element={<Registre />} />
+
+        
 
         <Route path='/dashboard' element={<Private />} >
           <Route path='user' element={<Dashboard />} />
@@ -28,13 +29,18 @@ function App() {
         </Route>
 
         <Route path='/dashboard' element={<AdminRoute/>} >
-            <Route path='admin' element={<AdminDashboard />}/>
+            <Route path='admin' element={<AdminDashboard />} />
+            <Route path='admin/createCategory' element={<CreateCategory/>} />
+
         </Route>
 
+        <Route path='/' element={<HomePage />} />
+        <Route path='/register' element={<Registre />} />
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/policy' element={<Policy />} />
+
         <Route path='/*' element={<Pagenotfound />} />
 
 

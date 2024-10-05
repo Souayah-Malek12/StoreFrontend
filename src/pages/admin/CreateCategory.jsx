@@ -4,10 +4,53 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import AdminMenu from "../../components/Layouts/AdminMenu";
 import CategoryForm from "../../components/Form/CategoryForm";
+import { Modal } from 'antd';
 
 export const CreateCategory = () => {
 
     const [name, setName] = useState("")
+    const [updatedNameCat, setUpdatedNameCat] = useState(" ")
+    const [visible, setVisible] = useState(false)
+    const [selected, setSelected] = useState(" ")
+
+    const handleDelete = async(dId)=> {
+      try{
+          const {data} = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/category/delete/${dId}`)
+          if(data.success){
+            toast.success(`${data.message} is updated Successfully `)
+            setVisible(false);
+            setUpdatedNameCat(" ")
+            getAllCategories();
+          }else{
+            toast.error(data.message)
+          }
+      }catch(error){
+        console.log(error)
+        toast.error('something in with delete operation ')
+      }
+    }
+
+    const handleUpdate = async(e) => {
+      e.preventDefault()
+      
+      try{
+        const {data} = await axios.put(`${import.meta.env.VITE_APP_API}/api/v1/category/update-category/${selected._id}`,
+          {name: updatedNameCat}
+        )   
+        if(data.success){
+          toast.success(`${updatedNameCat} is updated Successfully `)
+          setVisible(false);
+          setUpdatedNameCat(" ")
+          getAllCategories();
+        }else{
+          toast.error(data.message)
+        }
+       console.log(e)
+      }catch(error){
+        toast.error('something went wrong '),
+        console.log(error)
+      }
+    }
 
     const handleSubmit = async(e)=> {
       e.preventDefault()
@@ -16,7 +59,7 @@ export const CreateCategory = () => {
           {name}
         );
         if(data?.success){
-          toast.success(`{data.name} is created`)
+          toast.success(`${data.name} is created`)
           getAllCategories()
         }else{
           toast.error(data.message)
@@ -75,13 +118,29 @@ export const CreateCategory = () => {
                     <tr key={c._id}> {/* Correct placement of key prop */}
                       <td>{c.name}</td> {/* Move category name into a td */}
                       <td>
-                        <button className="btn btn-primary">Edit</button>
+                        <button className="btn btn-primary ms-2" onClick={() =>{ 
+                                  setVisible(true); 
+                                  setUpdatedNameCat(c.name)
+                                  setSelected(c)  }
+                                  }>
+                          Edit
+                          </button>
+                        <button className="btn btn-danger ms-2" 
+                          onClick ={ ()=> { handleDelete(c._id)}}
+                        >Delete</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+                  <Modal 
+                    onCancel={()=> setVisible(false)}
+                    footer = {null}
+                    visible={visible}
+                  >
+                        <CategoryForm  handleSubmit={handleUpdate} value={updatedNameCat} setValue={setUpdatedNameCat}/>
+                  </Modal>
           </div>
         </div>
       </div>

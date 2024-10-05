@@ -6,6 +6,7 @@ import Policy from "./pages/Policy"
 import Contact from "./pages/Contact"
 import Registre from "./pages/auth/Registre"
 
+import 'antd/dist/reset.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Login } from "./pages/auth/Login"
 import Dashboard from "./pages/user/dashboard"

@@ -76,8 +76,8 @@ export const CreateCategory = () => {
       const response = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/category/findAll`);
       const data = response.data;
 
-      if (data.success) {
-        setCategories(data.category);
+      if (data?.success) {
+        setCategories(data?.category);
         
       } else {
         toast.error("Failed to fetch categories");

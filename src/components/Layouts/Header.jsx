@@ -1,4 +1,4 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import img1 from "../../images/FB_IMG_1727343737907.jpg";
 import  {useAuth}  from "../../context/auth";
 
@@ -6,14 +6,18 @@ import toast from "react-hot-toast";
 
 const Header = () => {
   const [auth, setAuth] = useAuth(); // Access the Auth context
+  const navigate = useNavigate()
+
 
   const handleLogout = () => {
+
     setAuth({
       user: null,
       token: ''
     });
     localStorage.removeItem('auth');
     toast.success('Logout Successfully');
+    navigate('/')
   };
 
   return (

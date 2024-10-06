@@ -14,6 +14,9 @@ import { Private } from "./components/Routes/Private"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminRoute from "./components/Routes/AdminRoutes"
 import CreateCategory from "./pages/admin/CreateCategory"
+import CreateProduct from "./pages/admin/CreateProduct"
+import Products  from "./pages/admin/Products"
+import UpdateProduct from "./pages/admin/UpdateProduct"
 
 function App() {
 
@@ -32,7 +35,9 @@ function App() {
         <Route path='/dashboard' element={<AdminRoute/>} >
             <Route path='admin' element={<AdminDashboard />} />
             <Route path='admin/createCategory' element={<CreateCategory/>} />
-
+            <Route path='admin/createProduct' element={<CreateProduct/>} />
+            <Route path='admin/Products' element={<Products/>} />
+            <Route path='admin/Products/:slug' element={ <UpdateProduct />} />
         </Route>
 
         <Route path='/' element={<HomePage />} />

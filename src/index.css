@@ -109,3 +109,9 @@
   flex-direction: column;
   
 }
+
+
+.product-link {
+  text-decoration:  none;
+  color: black !important;
+}

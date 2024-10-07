@@ -24,10 +24,14 @@ export const CreateProduct = () => {
 
       }
     );
+    
 
       if (data?.success) {
-        toast.success(`The product "${data.name}" has been created successfully`);
+        toast.success(`The product ${data.name} has been created successfully`);
         getAllCategories();
+        
+
+        
       } else {
         toast.error(data.message);
       }
@@ -45,12 +49,7 @@ export const CreateProduct = () => {
       if (data?.success) {
         setCategories(data?.category);
 
-        setName(" ");
-        setDescription(" ");
-        setPrice("")
-        setQuantity("")
-        setCategory("")
-        setPhoto(null)
+       
       } else {
         toast.error("Failed to fetch categories");
       }
@@ -130,7 +129,7 @@ export const CreateProduct = () => {
                 <button
                   onClick={handleSubmit}
                   className='btn btn-primary'
-                  style={{ width: '100%', padding: '10px', fontSize: '16px' }}
+                  style={{ width: '40%', padding: '10px', fontSize: '16px' }}
                 >
                   Create Product
                 </button>

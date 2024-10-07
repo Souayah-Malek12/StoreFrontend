@@ -3,10 +3,11 @@ import AdminMenu from '../../components/Layouts/AdminMenu';
 import Layout from '../../components/Layouts/Layout';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { Select } from 'antd'; // No need to import Option separately
-import { useParams } from 'react-router-dom';
+import { Select } from 'antd'; 
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const UpdateProduct = () => {
+
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -16,9 +17,41 @@ export const UpdateProduct = () => {
   const [photo, setPhoto] = useState("");
   const [Id, setId] = useState("");
   const params = useParams()
+  const navigate = useNavigate()
 
-  const handleSubmit = async()=> {
+  
+  const deleteProduct = async()=> {
+    let answer = window.prompt('Are you sure want delete this product ')
+    if(answer === "yes") {
+      const response = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/product/delete/${Id}`)
+      const data = response.data
     
+      if(data?.success){
+        toast.success('Product deleted successfully')
+        navigate('/dashboard/admin/Products');
+      }
+        }else{
+        toast.error('Product does  not deleted ')
+
+      }
+  }
+
+  const handleSubmit = async(e)=> {
+    try{
+        e.preventDefault();
+        const response = await axios.put(`${import.meta.env.VITE_APP_API}/api/v1/product/updateProduct/${Id}`, {
+            name, description, price, category, quantity, photo
+        })
+        
+        const data  = response.data
+        if(data?.success){
+          toast.success(`${data.updatedProduct.name} updated Successfully`)
+          navigate('/dashboard/admin/Products');
+        }
+    }catch(error){
+      console.log(error);
+      toast.error('Something went wrong while updating the product');
+    }
     }
   
   const getProduct = async () => {
@@ -89,7 +122,7 @@ export const UpdateProduct = () => {
                 value={category}
               >
                 {categories.map((c) => (
-                  <Select.Option key={c._id} value={c._id}>
+                  <Select.Option key={c._id} value={c.name}>
                     {c.name}
                   </Select.Option>
                 ))}
@@ -98,7 +131,7 @@ export const UpdateProduct = () => {
               <div style={{ marginBottom: '15px' }}>
                 <label htmlFor='photo-Link' className='btn btn-outline-secondary' style={{ width: '100%' }}>
                   {photo ? <></> : 'Enter Photo Link'}
-                  <input type="text" className="form-control" onChange={(e) => setPhoto(e.target.value)} />
+                  <input type="text" className="form-control" onChange={(e) => setPhoto(e.target.value)} value={photo}/>
                 </label>
               </div>
 
@@ -137,9 +170,16 @@ export const UpdateProduct = () => {
                 <button
                   onClick={handleSubmit}
                   className='btn btn-primary'
-                  style={{ width: '100%', padding: '10px', fontSize: '16px' }}
+                  style={{ width: '40%', padding: '10px', fontSize: '16px' ,margin: '10px'}}
                 >
                   Update Product
+                </button>
+                <button
+                  onClick={deleteProduct}
+                  className='btn btn-danger'
+                  style={{ width: '40%', padding: '10px', fontSize: '16px' ,margin: '10px'}}
+                >
+                  Delete Product
                 </button>
               </div>
             </div>

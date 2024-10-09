@@ -33,7 +33,7 @@ export const Login = () => {
                 // Update global auth state
                 setAuth({
                     user: res.data.user,
-                    token: res.data.token
+                    privateToken: res.data.token
                 });
     
                 // Save auth data to localStorage for persistence

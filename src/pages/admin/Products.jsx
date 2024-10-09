@@ -40,23 +40,31 @@ export const Products = () => {
                     <h1 className='text-center'>All products list</h1>
                     <div className='d-flex'>
                     <div className="container">
-    <div className="row">
-        {prods.map(p => (
-          <NavLink key={p._id}  to={`/dashboard/admin/Products/${p.slug}`} className='product-link'>
-            <div className="col-md-4 mb-4" key={p._id}>
-                <div className="card" style={{ width: '100%' }}>
-                    <img src={p.photo} className="card-img-top" alt={`${p.name} picture`} />
-                    <div className="card-body">
-                        <h5 className="card-title">{p.name}</h5>
-                        <p className="card-text">{p.description}</p>
-                        <p className="card-text">${p.price.toFixed(2)}</p>
-                        <a href={`/products/${p._id}`} className="btn btn-primary">View Details</a>
-                    </div>
-                </div>
-            </div>
-            </NavLink>
-        ))}
+                    <div className="row">
+  {prods.map(p => (
+    <div className="col-md-4 mb-4" key={p._id}>
+      <div className="card" style={{ width: '100%' }}>
+        <NavLink to={`/dashboard/admin/Products/${p.slug}`} className='product-link'>
+        <img 
+  src={`${p.photo.replace('/upload/', '/upload/w_300,h_300,c_scale,q_auto,f_auto/')}`} 
+  className="card-img-top" 
+  alt={`${p.name} picture`} 
+/>
+
+
+
+        </NavLink>
+        <div className="card-body">
+          <h5 className="card-title">{p.name}</h5>
+          <p className="card-text">{p.description}</p>
+          <p className="card-text">${p.price.toFixed(2)}</p>
+          <NavLink to={`/products/${p._id}`} className="btn btn-primary">View Details</NavLink>
+        </div>
+      </div>
     </div>
+  ))}
+</div>
+
 </div>
 </div>
                 </div>

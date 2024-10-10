@@ -10,10 +10,14 @@ const HomePage = () => {
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
   const [radio, setRadio] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   // Fetch all products
   const getAllProducts = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get(
         `${import.meta.env.VITE_APP_API}/api/v1/product/getProducts`
       );
@@ -21,15 +25,49 @@ const HomePage = () => {
         setProds(data.products);
         toast.success("Products loaded successfully");
       }
+      setLoading(false);
     } catch (error) {
       console.log(error);
       toast.error("Failed to load products");
+      setLoading(false);
+    }
+  };
+
+  const loadMore = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_API}/api/v1/product/productList/${page}`
+      );
+      if (data?.success) {
+        setProds((prevProds) => [...prevProds, ...data.products]);
+      }
+      setLoading(false);
+      console.log("load")
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
     }
   };
 
   
 
-  
+  const getTotal = async () => {
+    try {
+      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/product/productCount`);
+      if (data?.success) {
+        setTotal(data?.total);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (page > 1) {
+      loadMore();
+    }
+  }, [page]);
 
   // Fetch all categories
   const getAllCategories = async () => {
@@ -51,48 +89,45 @@ const HomePage = () => {
   useEffect(() => {
     getAllCategories();
     getAllProducts();
+    getTotal();
+    loadMore()
   }, []);
- 
 
   // Handle category filtering
   const handleChecked = (checkedValue, categoryId) => {
     setChecked((prevChecked) => {
       if (checkedValue) {
-        // Add categoryId if checkedValue is true
         return [...prevChecked, categoryId];
       } else {
-        // Remove categoryId if checkedValue is false
         return prevChecked.filter((c) => c !== categoryId);
       }
     });
   };
-  
 
-  const filterProduits = async() =>{
-    try{
-          const {data} = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/filterProducts`,
-            {checked , radio }
-          )
-          if(data?.success){
-            setProds(data?.products)
-          }else{
-            setProds([])
-          }
-    }catch(error){
+  const filterProducts = async () => {
+    try {
+      const { data } = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/filterProducts`, {
+        checked,
+        radio,
+      });
+      if (data?.success) {
+        setProds(data?.products);
+      } else {
+        setProds([]);
+      }
+    } catch (error) {
       toast.error("Something went wrong when filtering products");
       console.log(error);
-      console.log("filetr");
-
     }
-  }
+  };
 
   useEffect(() => {
     if (checked.length || radio.length) {
-      filterProduits();
+      filterProducts();
     } else {
-      getAllProducts(); 
+      getAllProducts();
     }
-  }, [checked,radio]);
+  }, [checked, radio]);
 
   return (
     <Layout title={"All Products - Best Offer"}>
@@ -123,13 +158,13 @@ const HomePage = () => {
             </Radio.Group>
           </div>
           <div className="d-flex flex-column mt-4">
-              <button className="btn btn-primary" onClick={()=>window.location.reload()}>Réinitialiser les filtres</button>
+            <button className="btn btn-primary" onClick={() => window.location.reload()}>Réinitialiser les filtres</button>
           </div>
         </div>
 
         {/* Product Display */}
         <div className="col-md-9">
-          <h1 className="text-center">All products</h1>
+          <h1 className="text-center">All products ({total})</h1>
           <div className="d-flex flex-wrap">
             {prods.map((p) => (
               <div className="col-md-4 mb-4" key={p._id}>
@@ -142,16 +177,37 @@ const HomePage = () => {
                   />
                   <div className="card-body">
                     <h5 className="card-title">{p.name}</h5>
-                    <p className="card-text">{p.description.substring(0,30)}</p>
+                    <p className="card-text">{p.description.substring(0, 30)}...</p>
                     <p className="card-text">${p.price.toFixed(3)}</p>
-                    <button className="btn btn-primary">More details</button>
-                    <button className="btn btn-secondary">Add To Cart</button>
+                    <div className="d-flex justify-content-between">
+                      <button className="btn btn-primary">More details</button>
+                      <button className="btn btn-secondary">Add To Cart</button>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          
         </div>
+        <div className="mt-4">
+            <div className="mt-4">
+  <div className="m-2 p-3 text-center">
+    {prods && prods.length < total && (
+      <button
+        className="btn btn-warning"
+        onClick={(e) => {
+          e.preventDefault();
+          setPage((prevPage) => prevPage + 1);  // Update page state
+        }}
+      >
+        {loading ? "...loading" : "Load More"}
+      </button>
+    )}
+  </div>
+</div>
+
+          </div>
       </div>
     </Layout>
   );

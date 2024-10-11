@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices"; // Ensure Prices is an array
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [prods, setProds] = useState([]);
@@ -13,6 +14,7 @@ const HomePage = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch all products
   const getAllProducts = async () => {
@@ -104,14 +106,20 @@ const HomePage = () => {
     });
   };
 
-  const filterProducts = async () => {
+  const filterProducts = async (page = 1) => {
     try {
       const { data } = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/filterProducts`, {
         checked,
         radio,
+        page,  // Send the current page to the backend
       });
       if (data?.success) {
-        setProds(data?.products);
+        if (page === 1) {
+          setProds(data?.products); // Reset products when filters are applied
+        } else {
+          setProds((prevProds) => [...prevProds, ...data.products]); // Append products when loading more
+        }
+        setTotal(data?.total);
       } else {
         setProds([]);
       }
@@ -120,14 +128,25 @@ const HomePage = () => {
       console.log(error);
     }
   };
+  
 
   useEffect(() => {
     if (checked.length || radio.length) {
-      filterProducts();
+      filterProducts(page); // Fetch filtered products with pagination
     } else {
-      getAllProducts();
+      loadMore(); // Fetch unfiltered paginated products
+    }
+  }, [page]);
+  
+  useEffect(() => {
+    setPage(1);  // Reset to the first page when filters are applied
+    if (checked.length || radio.length) {
+      filterProducts(1);  // Fetch first page of filtered products
+    } else {
+      getAllProducts();  // Fetch all products if no filters are applied
     }
   }, [checked, radio]);
+  
 
   return (
     <Layout title={"All Products - Best Offer"}>
@@ -180,7 +199,7 @@ const HomePage = () => {
                     <p className="card-text">{p.description.substring(0, 30)}...</p>
                     <p className="card-text">${p.price.toFixed(3)}</p>
                     <div className="d-flex justify-content-between">
-                      <button className="btn btn-primary">More details</button>
+                      <button className="btn btn-primary" onClick={(()=> navigate(`/ProductDetails/${p.slug}`))}>More details</button>
                       <button className="btn btn-secondary">Add To Cart</button>
                     </div>
                   </div>
@@ -195,14 +214,15 @@ const HomePage = () => {
   <div className="m-2 p-3 text-center">
     {prods && prods.length < total && (
       <button
-        className="btn btn-warning"
-        onClick={(e) => {
-          e.preventDefault();
-          setPage((prevPage) => prevPage + 1);  // Update page state
-        }}
-      >
-        {loading ? "...loading" : "Load More"}
-      </button>
+      className="btn btn-warning"
+      onClick={(e) => {
+        e.preventDefault();
+        setPage((prevPage) => prevPage + 1);  // Increment page number
+      }}
+    >
+      {loading ? "...loading" : "Load More"}
+    </button>
+    
     )}
   </div>
 </div>

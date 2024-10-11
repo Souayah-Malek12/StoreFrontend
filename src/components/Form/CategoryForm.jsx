@@ -1,4 +1,5 @@
 
+// eslint-disable-next-line react/prop-types
 export const CategoryForm = ({handleSubmit, value, setValue}) => {
 
   return (

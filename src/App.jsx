@@ -17,6 +17,8 @@ import CreateCategory from "./pages/admin/CreateCategory"
 import CreateProduct from "./pages/admin/CreateProduct"
 import Products  from "./pages/admin/Products"
 import UpdateProduct from "./pages/admin/UpdateProduct"
+import { Search } from "./pages/Search"
+import ProductDetails from './pages/ProductDetails'
 
 function App() {
 
@@ -41,6 +43,8 @@ function App() {
         </Route>
 
         <Route path='/' element={<HomePage />} />
+        <Route path='/search' element={<Search />} />
+        <Route path='/ProductDetails/:slug' element={<ProductDetails />} />
         <Route path='/register' element={<Registre />} />
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />

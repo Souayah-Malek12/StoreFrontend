@@ -3,6 +3,7 @@ import img1 from "../../images/FB_IMG_1727343737907.jpg";
 import  {useAuth}  from "../../context/auth";
 
 import toast from "react-hot-toast";
+import { SearchInput } from "../Form/SearchInpput";
 
 const Header = () => {
   const [auth, setAuth] = useAuth(); // Access the Auth context
@@ -40,6 +41,7 @@ const Header = () => {
               <img src={img1} className="img1" alt="Ecommerce App" />25_12 Collections
             </Link>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              <SearchInput />
               <li className="nav-item">
                 <NavLink to="/" className="nav-link">
                   Home

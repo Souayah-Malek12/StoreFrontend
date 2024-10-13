@@ -4,9 +4,11 @@ import  {useAuth}  from "../../context/auth";
 
 import toast from "react-hot-toast";
 import { SearchInput } from "../Form/SearchInpput";
+import { useCategory } from "../../hooks/useCategory";
 
 const Header = () => {
   const [auth, setAuth] = useAuth(); // Access the Auth context
+  const result = useCategory()
   const navigate = useNavigate()
 
 
@@ -47,11 +49,39 @@ const Header = () => {
                   Home
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink to="/category" className="nav-link">
-                  Category
-                </NavLink>
-              </li>
+
+              <li className="nav-item dropdown">
+  <Link 
+    to={`/category`} 
+    className="nav-link dropdown-toggle" 
+    role="button" 
+    data-bs-toggle="dropdown" 
+    aria-expanded="false"
+  >
+    Category
+  </Link>
+  
+  {/* Render the categories inside a single dropdown menu */}
+  <ul className="dropdown-menu">  
+  <li key="1">
+          <Link className="dropdown-item" to={`/category`}>
+            All Categories
+          </Link>
+        </li>
+    {
+      result?.map((c) => (
+        <li key={c._id}>
+          <Link className="dropdown-item" to={`/category/${c.slug}`}>
+            {c.name}
+          </Link>
+        </li>
+      ))
+    }
+  </ul>
+</li>
+
+        
+             
 
 
               

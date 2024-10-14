@@ -51,7 +51,7 @@ const CategoryList = () => {
                     <p className="card-text"> $ {p.price}</p>
                     <button
                       className="btn btn-primary ms-1"
-                      onClick={() => navigate(`/product/${p.slug}`)}
+                      onClick={() => navigate(`/ProductDetails/${p.slug}`)}
                     >
                       More Details
                     </button>

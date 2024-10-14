@@ -1,13 +1,15 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import img1 from "../../images/FB_IMG_1727343737907.jpg";
 import  {useAuth}  from "../../context/auth";
-
+import {Badge} from "antd"
 import toast from "react-hot-toast";
 import { SearchInput } from "../Form/SearchInpput";
 import { useCategory } from "../../hooks/useCategory";
+import { useCart } from "../../context/Cart";
 
 const Header = () => {
   const [auth, setAuth] = useAuth(); // Access the Auth context
+  const [cart] = useCart()
   const result = useCategory()
   const navigate = useNavigate()
 
@@ -114,9 +116,11 @@ const Header = () => {
 
 
               <li className="nav-item">
+                <Badge count={cart.length} showZero>
                 <NavLink to="/cart" className="nav-link">
-                  Cart (0)
+                  Cart 
                 </NavLink>
+                </Badge>
               </li>
             </ul>
           </div>

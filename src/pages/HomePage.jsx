@@ -5,8 +5,10 @@ import toast from "react-hot-toast";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices"; // Ensure Prices is an array
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/Cart";
 
 const HomePage = () => {
+  const [cart, setCart] = useCart([])
   const [prods, setProds] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -128,6 +130,24 @@ const HomePage = () => {
       console.log(error);
     }
   };
+  const AddToChart = (pid) => {
+    const existingItem = cart.find(p => p._id === pid);
+  
+    if (existingItem) {
+      // If the item exists, update the quantity
+      const updatedCart = cart.map(p =>
+        p._id === pid ? { ...p, quantity: p.quantity + 1 } : p
+      );
+      setCart(updatedCart); // Set the updated cart with increased quantity
+    } else {
+      // If the item does not exist, find the product and add it to the cart
+      const productToAdd = prods.find(p => p._id === pid);
+      if (productToAdd) {
+        setCart([...cart, { ...productToAdd, quantity: 1 }]); // Add new product with quantity 1
+      }
+    }
+  };
+  
   
 
   useEffect(() => {
@@ -200,7 +220,12 @@ const HomePage = () => {
                     <p className="card-text">${p.price.toFixed(3)}</p>
                     <div className="d-flex justify-content-between">
                       <button className="btn btn-primary" onClick={(()=> navigate(`/ProductDetails/${p.slug}`))}>More details</button>
-                      <button className="btn btn-secondary">Add To Cart</button>
+                      <button 
+                      className="btn btn-secondary" 
+                      onClick={
+                       ()=> AddToChart(p._id)}
+                      >Add To Cart
+                      </button>
                     </div>
                   </div>
                 </div>

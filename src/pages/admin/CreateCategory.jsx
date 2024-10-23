@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import AdminMenu from "../../components/Layouts/AdminMenu";
 import CategoryForm from "../../components/Form/CategoryForm";
 import { Modal } from 'antd';
+import { useAuth } from "../../context/auth";
 
 export const CreateCategory = () => {
 
+    const [auth] = useAuth()
     const [name, setName] = useState("")
     const [updatedNameCat, setUpdatedNameCat] = useState(" ")
     const [visible, setVisible] = useState(false)
@@ -15,7 +17,11 @@ export const CreateCategory = () => {
 
     const handleDelete = async(dId)=> {
       try{
-          const {data} = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/category/delete/${dId}`)
+          const {data} = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/category/delete/${dId}`,{
+            headers: {
+            Authorization: auth?.token // Ensure token is passed here
+            }
+          })
           if(data.success){
             toast.success(`${data.message} is updated Successfully `)
             setVisible(false);
@@ -35,7 +41,11 @@ export const CreateCategory = () => {
       
       try{
         const {data} = await axios.put(`${import.meta.env.VITE_APP_API}/api/v1/category/update-category/${selected._id}`,
-          {name: updatedNameCat}
+          {name: updatedNameCat}, {
+            headers: {
+            Authorization: auth?.token // Ensure token is passed here
+            }
+          }
         )   
         if(data.success){
           toast.success(`${updatedNameCat} is updated Successfully `)
@@ -56,7 +66,11 @@ export const CreateCategory = () => {
       e.preventDefault()
       try{
         const {data} = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/category/create-category` , 
-          {name}
+          {name}, {
+            headers: {
+            Authorization: auth?.token // Ensure token is passed here
+            }
+          }
         );
         if(data?.success){
           toast.success(`${data.name} is created`)

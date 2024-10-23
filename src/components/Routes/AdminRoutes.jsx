@@ -18,7 +18,11 @@ export const AdminRoute = () => {
         const checkAuth = async() => {
             try{
 
-        const res = await axios.get(' http://localhost:3000/api/v1/auth/admin-auth')
+        const res = await axios.get('http://localhost:3000/api/v1/auth/admin-auth',{
+            headers: {
+                Authorization: auth?.token 
+            }
+        })
 
         
 

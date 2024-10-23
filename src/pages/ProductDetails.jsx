@@ -4,12 +4,16 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Don't forget to import useNavigate
 import toast from "react-hot-toast";
 import "./ProductDetails.css"; // Import the CSS file for additional styles
+import { useCart } from "../context/Cart";
+import { useProds } from "../context/prods";
 
 const ProductDetails = () => {
     const [prod, setProd] = useState(null);
     const [relatedProd, setRelatedProd] = useState([]);
     const params = useParams();
     const navigate = useNavigate(); // Use useNavigate hook
+    const [cart, setCart] = useCart([]);
+    const { prodsList } = useProds();
 
     const getProduct = async () => {
         try {
@@ -38,8 +42,30 @@ const ProductDetails = () => {
         }
     };
 
+    const AddToChart = (pid) => {
+        const existingItem = cart.find(p => p._id === pid);
+        
+
+        if (existingItem) {
+            // If the item exists, update the quantity
+            const updatedCart = cart.map(p =>
+                p._id === pid ? { ...p, quantity: p.quantity + 1 } : p
+            );
+            setCart(updatedCart); // Set the updated cart with increased quantity
+        } else {
+            // If the item does not exist, find the product and add it to the cart
+            const productToAdd = prodsList.find(p => p._id === pid);
+            if (productToAdd) {
+                setCart([...cart, { ...productToAdd, quantity: 1 }]); // Add new product with quantity 1
+            } else {
+                console.error("Product not found in prodsList.");
+            }
+        }
+    };
+
     useEffect(() => {
-        getProduct();
+            getProduct();
+       
     }, [params.slug]);
 
     return (
@@ -62,7 +88,9 @@ const ProductDetails = () => {
                             <p className="text-muted mb-4">{prod?.description}</p>
                             <h4 className="text-primary mb-3">Price: ${prod?.price}</h4>
                             <h5 className="text-secondary mb-4">Category: {prod?.category?.name ? prod.category.name : "No category"}</h5>
-                            <button className="btn btn-secondary btn-lg">Add to Cart</button>
+                            <button className="btn btn-secondary btn-lg" 
+                                onClick={() => AddToChart(prod?._id)} // Pass the product ID
+                            >Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -86,7 +114,7 @@ const ProductDetails = () => {
                                         <p className="card-text">${p.price.toFixed(2)}</p>
                                         <div className="d-flex justify-content-between">
                                             <button className="btn btn-primary" onClick={() => navigate(`/ProductDetails/${p.slug}`)}>More details</button>
-                                            <button className="btn btn-secondary">Add To Cart</button>
+                                            <button className="btn btn-secondary" onClick={() => AddToChart(p?._id)}>Add To Cart</button>
                                         </div>
                                     </div>
                                 </div>

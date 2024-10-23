@@ -27,7 +27,6 @@ const HomePage = () => {
       );
       if (data?.success) {
         setProds(data.products);
-        toast.success("Products loaded successfully");
       }
       setLoading(false);
     } catch (error) {
@@ -40,19 +39,18 @@ const HomePage = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_API}/api/v1/product/productList/${page}`
-      );
+      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/product/productList/${page}`);
       if (data?.success) {
-        setProds((prevProds) => [...prevProds, ...data.products]);
+        const uniqueNewProducts = [...new Map([...prods, ...data.products].map(item => [item._id, item])).values()];
+        setProds(uniqueNewProducts);
       }
       setLoading(false);
-      console.log("load")
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.error(error);
     }
   };
+  
 
   
 

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { Select } from 'antd'; 
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/auth';
 
 export const UpdateProduct = () => {
 
@@ -18,12 +19,16 @@ export const UpdateProduct = () => {
   const [Id, setId] = useState("");
   const params = useParams()
   const navigate = useNavigate()
-
+  const [auth] = useAuth()
   
   const deleteProduct = async()=> {
     let answer = window.prompt('Are you sure want delete this product ')
     if(answer === "yes") {
-      const response = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/product/delete/${Id}`)
+      const response = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/product/delete/${Id}`,{
+        headers: {
+        Authorization: auth?.token // Ensure token is passed here
+        }
+      })
       const data = response.data
     
       if(data?.success){
@@ -41,6 +46,10 @@ export const UpdateProduct = () => {
         e.preventDefault();
         const response = await axios.put(`${import.meta.env.VITE_APP_API}/api/v1/product/updateProduct/${Id}`, {
             name, description, price, category, quantity, photo
+        }, {
+          headers: {
+          Authorization: auth?.token // Ensure token is passed here
+          }
         })
         
         const data  = response.data

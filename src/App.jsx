@@ -22,6 +22,8 @@ import ProductDetails from './pages/ProductDetails'
 import AllCategories from './pages/Category'
 import CategoryList from "./pages/ProdByCat"
 import { CartPage } from "./pages/CartPage"
+import Profile from "./pages/user/Profile"
+import OrderList from "./pages/user/OrderList"
 
 
 function App() {
@@ -35,6 +37,9 @@ function App() {
 
         <Route path='/dashboard' element={<Private />} >
           <Route path='user' element={<Dashboard />} />
+          <Route path='user/profile' element={<Profile />} />
+          <Route path='user/orders' element={<OrderList />} />
+
 
         </Route>
 

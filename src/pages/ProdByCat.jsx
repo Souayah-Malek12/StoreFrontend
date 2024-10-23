@@ -2,16 +2,22 @@ import  { useState, useEffect } from "react";
 import Layout from "../components/Layouts/Layout"
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useProds } from "../context/prods";
+import { useCart } from "../context/Cart";
 
 const CategoryList = () => {
   const params = useParams();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState([]);
+  const { prodsList } = useProds();
+  const [cart, setCart] = useCart([]);
+
 
   useEffect(() => {
     if (params?.slug) getPrductsByCat();
   }, [params?.slug]);
+  
   const getPrductsByCat = async () => {
     try {
       const { data } = await axios.get(
@@ -23,6 +29,27 @@ const CategoryList = () => {
       console.log(error);
     }
   };
+
+  const AddToChart = (pid) => {
+    const existingItem = cart.find(p => p._id === pid);
+    
+
+    if (existingItem) {
+        // If the item exists, update the quantity
+        const updatedCart = cart.map(p =>
+            p._id === pid ? { ...p, quantity: p.quantity + 1 } : p
+        );
+        setCart(updatedCart); // Set the updated cart with increased quantity
+    } else {
+        // If the item does not exist, find the product and add it to the cart
+        const productToAdd = prodsList.find(p => p._id === pid);
+        if (productToAdd) {
+            setCart([...cart, { ...productToAdd, quantity: 1 }]); // Add new product with quantity 1
+        } else {
+            console.error("Product not found in prodsList.");
+        }
+    }
+};
 
   return (
     <Layout>
@@ -55,7 +82,7 @@ const CategoryList = () => {
                     >
                       More Details
                     </button>
-                    <button className="btn btn-secondary ms-1">
+                    <button className="btn btn-secondary ms-1" onClick={()=>AddToChart(p._id)}>
                       ADD TO CART
                     </button>
                   </div>

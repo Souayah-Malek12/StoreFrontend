@@ -14,7 +14,6 @@ import { Private } from "./components/Routes/Private"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminRoute from "./components/Routes/AdminRoutes"
 import CreateCategory from "./pages/admin/CreateCategory"
-import CreateProduct from "./pages/admin/CreateProduct"
 import Products  from "./pages/admin/Products"
 import UpdateProduct from "./pages/admin/UpdateProduct"
 import { Search } from "./pages/Search"
@@ -24,6 +23,8 @@ import CategoryList from "./pages/ProdByCat"
 import { CartPage } from "./pages/CartPage"
 import Profile from "./pages/user/Profile"
 import OrderList from "./pages/user/OrderList"
+import AdmProfile from "./pages/admin/AdmProfile"
+import CreateProduct from "./pages/admin/CreateProduct"
 
 
 function App() {
@@ -46,7 +47,8 @@ function App() {
         <Route path='/dashboard' element={<AdminRoute/>} >
             <Route path='admin' element={<AdminDashboard />} />
             <Route path='admin/createCategory' element={<CreateCategory/>} />
-            <Route path='admin/createProduct' element={<CreateProduct/>} />
+            <Route path='admin/Admprofil' element={<AdmProfile/>} />
+            <Route path='admin/createproduct' element ={<CreateProduct />} />
             <Route path='admin/Products' element={<Products/>} />
             <Route path='admin/Products/:slug' element={ <UpdateProduct />} />
         </Route>

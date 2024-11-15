@@ -1,20 +1,103 @@
+import { useEffect, useState } from "react";
 import Layout from "../../components/Layouts/Layout";
 import UserMenu from "../../components/Layouts/UserMenu";
+import { useAuth } from "../../context/auth";
+import axios from "axios";
+import moment from 'moment';
 
- const OrderList = () => {
+const OrderList = () => {
+
+  const [orders, setOrdes] = useState([]);
+  const [auth ] = useAuth();
+  const [amount, setAmount] = useState("");
+  const [total, setTotal] = useState("");
+
+  const getOrders = async()=>{
+    try{
+      const {data} = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/auth/orders`,{
+        headers :{
+          authorization : auth?.token
+        }
+      });
+      if(data?.success){
+        setOrdes(data?.orders);
+        setAmount(data?.totals?.totalAmount);
+        setTotal(data?.totals?.totalCount);
+      }
+    }catch(err){
+      console.log(err);
+    }
+  };
+
+  useEffect(()=>{
+    if(auth?.token) getOrders();
+  },[auth?.token]);
+
   return (
     <Layout title={"Orders List"}>
-    <div>
-    <div>
-        <UserMenu />
-        
-    </div>
-    <div>
-        orders List
-    </div>
-    </div>
-    </Layout>
-  )
-}
+      <div className="container-fluid p-3 m-3">
+        <div className="row">
+          <div className="col-md-3">
+            <UserMenu />
+          </div>
+          <div className="col-md-9">
+            <h1 className="text-center" style={{ marginBottom: "20px", fontWeight: "bold" }}>
+              All Orders ({total})
+            </h1>
+            {
+              orders?.map((o, i) => (
+                <div key={o._id} style={{ border: "1px solid #ddd", borderRadius: "10px", marginBottom: "20px", boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}>
+                  <table className="table" style={{ marginBottom: "0", backgroundColor: "#f9f9f9" }}>
+                    <thead style={{ backgroundColor: "#e9ecef" }}>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Buyer</th>
+                        <th scope="col">Ordered At</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr style={{ fontWeight: "500" }}>
+                        <td>{i + 1}</td>
+                        <td>{o?.status}</td>
+                        <td>{o?.buyer?.name}</td>
+                        <td>{moment(o?.createdAt).fromNow()}</td>
+                        <td>{o?.payment?.Success ? "Success" : "Pending"}</td>
+                        <td>{o?.products?.length}</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
-export default OrderList
+                  <div className="container p-3">
+                    {o?.products.map((p) => (
+                      <div key={p._id} className="row mb-2" style={{ borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+                        <div className="col-md-4 d-flex align-items-center">
+                          <img
+                            src={p.photo}
+                            alt={`${p.name} picture`}
+                            style={{ height: "100px", width: "80px", borderRadius: "5px", objectFit: "cover", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="col-md-8">
+                          <h5 style={{ marginBottom: "5px", fontWeight: "bold" }}>{p.name}</h5>
+                          <p style={{ marginBottom: "5px", color: "#555" }}>{p.description}...</p>
+                          <h6 style={{ color: "#28a745", fontWeight: "bold" }}>{p.price} dt</h6>
+                          <p style={{ marginBottom: "0" }}>Quantity: {p.quantity}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+export default OrderList;

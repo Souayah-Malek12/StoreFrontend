@@ -45,7 +45,7 @@ const Profile = () => {
 
     return (
         <Layout title={"Manage Profile"}>
-            <div style={{ margin: '15rem auto', padding: '3rem', maxWidth: '800px', display: 'flex' }}>
+            <div style={{ padding: '3rem', maxWidth: '800px', display: 'flex' }}>
                 <div style={{ flex: '1', marginRight: '2rem', display: 'flex', flexDirection: 'column' }}>
                     <UserMenu />
                 </div>

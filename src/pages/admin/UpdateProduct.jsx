@@ -3,12 +3,12 @@ import AdminMenu from '../../components/Layouts/AdminMenu';
 import Layout from '../../components/Layouts/Layout';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { Select } from 'antd'; 
+import { Select, Button } from 'antd'; 
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/auth';
 
 export const UpdateProduct = () => {
-
+  const [details, setDetails] = useState([]);
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -20,6 +20,14 @@ export const UpdateProduct = () => {
   const params = useParams()
   const navigate = useNavigate()
   const [auth] = useAuth()
+  const [color, setColor]=useState('')
+  const [size, setSize]=useState('')
+  const [quantities, setQuantities]=useState('')
+  const [Newdetails , setNewDetails] = useState([])
+
+  
+
+
   
   const deleteProduct = async()=> {
     let answer = window.prompt('Are you sure want delete this product ')
@@ -44,8 +52,11 @@ export const UpdateProduct = () => {
   const handleSubmit = async(e)=> {
     try{
         e.preventDefault();
+        const updatedDetails = [ { color, size, quantities }];
+
+
         const response = await axios.put(`${import.meta.env.VITE_APP_API}/api/v1/product/updateProduct/${Id}`, {
-            name, description, price, category, quantity, photo
+            name, description, price, category, quantity, photo, Newdetails  :updatedDetails
         }, {
           headers: {
           Authorization: auth?.token // Ensure token is passed here
@@ -62,6 +73,20 @@ export const UpdateProduct = () => {
       toast.error('Something went wrong while updating the product');
     }
     }
+
+    const handleAddDetail = () => {
+      if (color.trim() && size.trim() && quantities.trim() && !isNaN(quantities)) {
+        const newDetail = { color, size, quantities: parseInt(quantities) }; 
+  
+  
+        // Add new detail to the details array
+        setDetails((prevDetails) => [...prevDetails, newDetail]);
+  
+        // Clear input fields after adding the detail
+       
+        toast.success('Detail added successfully');
+      }
+    };
   
   const getProduct = async () => {
     
@@ -75,6 +100,7 @@ export const UpdateProduct = () => {
       setQuantity(data.product.quantity)
       setPhoto(data.product.photo)
       setCategory(data.product.category)
+      setDetails(data.product.details);
       
 
     } catch (error) {
@@ -82,6 +108,8 @@ export const UpdateProduct = () => {
       toast.error('Something went wrong while creating the product');
     }
   };
+
+  
 
   useEffect(() => {
     getProduct()
@@ -131,7 +159,7 @@ export const UpdateProduct = () => {
                 value={category}
               >
                 {categories.map((c) => (
-                  <Select.Option key={c._id} value={c.name}>
+                  <Select.Option key={c._id} value={c._id}>
                     {c.name}
                   </Select.Option>
                 ))}
@@ -174,6 +202,24 @@ export const UpdateProduct = () => {
                 <label>Enter Quantity</label>
                 <input type="number" className="form-control" onChange={(e) => setQuantity(e.target.value)}  value={quantity}/>
               </div>
+
+              <h4>Product Details</h4>
+               <div>
+                  {details?.map((d, index) => (
+                  <ul key={index}>
+                  <li>
+                       {`color : ${d.color}, size : ${d.size}, quantities : ${d.quantities}`}
+                   </li>
+                  </ul>
+                    ))}
+              </div>
+
+                            <div className="detail-inputs" style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                                <input type="text" placeholder="Color" className="form-control" value={color} onChange={(e) => setColor(e.target.value)} />
+                                <input type="text" placeholder="Size" className="form-control" value={size} onChange={(e) => setSize(e.target.value)} />
+                                <input type="number" placeholder="Quantity" className="form-control" value={quantities} onChange={(e) => setQuantities(e.target.value)} />
+                                <Button onClick={handleAddDetail}>Add Detail</Button>
+                            </div>
 
               <div style={{ marginBottom: '15px' }}>
                 <button

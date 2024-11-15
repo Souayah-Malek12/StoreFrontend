@@ -88,6 +88,19 @@ const ProductDetails = () => {
                             <p className="text-muted mb-4">{prod?.description}</p>
                             <h4 className="text-primary mb-3">Price: ${prod?.price}</h4>
                             <h5 className="text-secondary mb-4">Category: {prod?.category?.name ? prod.category.name : "No category"}</h5>
+                            <div>
+                                <div>
+                                    {prod?.details.map((d, i)=>(
+                                        <h1 key={i}>{d.color}</h1>
+                                    ))}
+                                </div>
+                                <div>
+                                     {prod?.details.map((d, i)=>(
+                                        <h1 key={i}>{d.size}</h1>
+                                    ))}
+                                </div>
+                            </div>
+                            
                             <button className="btn btn-secondary btn-lg" 
                                 onClick={() => AddToChart(prod?._id)} // Pass the product ID
                             >Add to Cart</button>

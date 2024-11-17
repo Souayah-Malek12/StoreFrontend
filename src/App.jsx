@@ -53,6 +53,9 @@ function App() {
             <Route path='admin/Products/:slug' element={ <UpdateProduct />} />
         </Route>
 
+        <Route path='nav/orders' element={<OrderList />} />
+        <Route path='nav/Products' element={<Products/>} />
+
         <Route path='/' element={<HomePage />} />
         <Route path='/search' element={<Search />} />
         <Route path='/ProductDetails/:slug' element={<ProductDetails />} />

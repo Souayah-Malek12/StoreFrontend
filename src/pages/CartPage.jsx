@@ -14,10 +14,13 @@ export const CartPage = () => {
     const [clientToken, setClientToken] = useState("");
     const [instance, setInstance] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [total , setTotal] = useState(0)
     const navigate = useNavigate();
 
     const totalPrice = () => {
-        return cart.reduce((total, p) => total + p.price * p.quantity, 0).toFixed(2);
+         const tot = cart.reduce((total, p) => total + p.price * p.quantity, 0).toFixed(2);
+         setTotal(tot)
+         
     };
 
     const removeItemFromCart = (pid) => {
@@ -44,6 +47,7 @@ export const CartPage = () => {
         }
     };
     
+
     const handlePaymentDelivery = async()=>{
         try{
             const {data} = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/payOnDeliver`,{
@@ -93,105 +97,156 @@ export const CartPage = () => {
 
     useEffect(() => {
         getToken();
+        totalPrice();
     }, [auth?.token]);
 
-    return (
-        <Layout title={"Your Cart"}>
-            <div className="container mt-5 mb-5">
-                <div className="row">
-                    <div className="col-md-12 text-center">
-                        <h1 className="bg-light p-3 mb-4">
-                            {auth?.user ? `Hello ${auth?.user?.email.split('@')[0]}` : "Welcome User"}
-                        </h1>
-                        <h4 className="mb-4">
-                            {cart.length > 0 ? `You have ${cart.length} unique items` : `Your cart is empty`}
-                            {auth?.token ? "" : " - Please Login"}
-                        </h4>
-                    </div>
+   return(
+    <Layout title="Cart Page">
+    <div className="container mt-5 mb-5">
+    <div className="row">
+        <div className="col-md-12 text-center">
+            <h1 className="bg-light p-3 mb-4 rounded shadow-sm">
+                {auth?.user ? `Hello ${auth?.user?.email.split('@')[0]}` : "Welcome User"}
+            </h1>
+            <h4 className="mb-4">
+                {cart.length > 0 ? `You have ${cart.length} unique items` : `Your cart is empty`}
+                {auth?.token ? "" : " - Please Login"}
+            </h4>
+        </div>
 
-                    <div className="col-md-8">
-                        <h4 className="mb-3">Cart Items</h4>
-                        {cart.length === 0 ? (
-                            <p>Your cart is currently empty.</p>
-                        ) : (
-                            cart.map((p) => (
-                                <div key={p._id} className="row p-1 mb-2">
-                                    <div className="col-md-4">
-                                        <img
-                                            src={p.photo}
-                                            height={"100px"}
-                                            width={"80px"}
-                                            className="card-img-top"
-                                            loading="lazy"
-                                            alt={`${p.name} picture`}
-                                        />
-                                    </div>
-                                    <div className="col-md-8">
-                                        <h5>{p.name}</h5>
-                                        <p>{p.description.substring(0, 30)}...</p>
-                                        <h6 className="text-success">{p.price.toFixed(2)} dt</h6>
-                                        <p>Quantity: {p.quantity}</p>
-                                        <button className="btn btn-danger" onClick={() => removeItemFromCart(p._id)}>
-                                            Remove Item
-                                        </button>
-                                    </div>
-                                    <hr className="mt-2" />
+        {/* Cart Items */}
+        <div className="col-md-8">
+            <h4 className="mb-3">Cart Items</h4>
+            {cart.length === 0 ? (
+                <p className="alert alert-warning">Your cart is currently empty.</p>
+            ) : (
+                cart.map((p) => (
+                    <div
+                        key={p._id}
+                        className="row p-3 mb-3 shadow-sm rounded"
+                        style={{ border: "1px solid #ddd", backgroundColor: "#fff" }}
+                    >
+                        <div className="col-md-4">
+                            <img
+                                src={p.photo}
+                                alt={`${p.name}`}
+                                className="card-img-top rounded shadow-sm"
+                                style={{ width: "100px", height: "100px" }}
+                                loading="lazy"
+                            />
+                        </div>
+                        <div className="col-md-8 d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 className="mb-1">{p.name}</h5>
+                                <p className="text-muted">{p.description.substring(0, 30)}...</p>
+                                <h6 className="text-success mb-1">{p.price.toFixed(2)} dt</h6>
+                                <p>Quantity: {p.quantity}</p>
+                                <div className="d-flex flex-wrap gap-3">
+                                    {p?.details?.map((d, i) => (
+                                        <div
+                                            key={i}
+                                            className="border rounded px-3 py-2"
+                                            style={{
+                                                backgroundColor: "#f9f9f9",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                                            }}
+                                        >
+                                            <p className="mb-0">
+                                                <strong>Size:</strong> {d.size}
+                                            </p>
+                                            <p className="mb-0">
+                                                <strong>Color:</strong> {d.color}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))
-                        )}
-                    </div>
-
-                    <div className="col-md-4">
-                        <h4 className="mb-3">Cart Summary</h4>
-                        <div className="card border shadow-sm p-3">
-                            <p className="font-weight-bold">Total Checkout Payment:</p>
-                            <h5 className="text-danger">{totalPrice()} dt</h5>
-                            {auth?.user?.address ? (
-                                <>
-                                    <div className="mb-3">
-                                        <h4>Current Address</h4>
-                                        <h5>{auth?.user?.address}</h5>
-                                        <button className="btn btn-primary" onClick={() => navigate('/dashboard/user/profile')}>
-                                            Update Address
-                                        </button>
-                                    </div>
-                                </>
-                            ) : (
-                                <button onClick={() => navigate('/login')}>Please Login To Checkout</button>
-                            )}
-
-                            {clientToken ? (
-                                <div className="mt-2">
-                                    <DropIn
-                                        options={{
-                                            authorization: clientToken,
-                                            paypal: { flow: "vault" },
-                                            
-                                        }}
-                                        onInstance={instance => setInstance(instance)}
-                                    />
-                                    <button
-                                        className="btn btn-secondary"
-                                        disabled={loading || !instance} // Disable if loading or instance is null
-                                        onClick={handlePayment}
-                                    >
-                                        {loading ? "Processing..." : "Make Payment"}
-                                    </button>
-                                </div>
-                            ) : (
-                                <h1>Loading payment ...</h1>
-                            )}
+                            </div>
                             <button
-                                        className="btn btn-primary mt-2 border-3"
-                                        disabled={loading || !instance} // Disable if loading or instance is null
-                                        onClick={handlePaymentDelivery}
-                                    >
-                                        {loading ? "Processing..." : "Pay On delivery"}
-                                    </button>
+                                className="btn btn-danger mt-3"
+                                style={{ width: "max-content" }}
+                                onClick={() => removeItemFromCart(p._id)}
+                            >
+                                Remove Item
+                            </button>
                         </div>
                     </div>
-                </div>
+                ))
+            )}
+        </div>
+
+        {/* Cart Summary */}
+        <div className="col-md-4">
+            <h4 className="mb-3">Cart Summary</h4>
+            <div
+                className="card border shadow-sm p-3 rounded"
+                style={{ backgroundColor: "#f7f9fc" }}
+            >
+                <p className="font-weight-bold">Total Checkout Payment:</p>
+                <h5 className="text-danger mb-3">{total} dt</h5>
+                {auth?.user?.address ? (
+                    <div className="mb-3">
+                        <h4>Current Address</h4>
+                        <h5 className="text-muted">{auth?.user?.address}</h5>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => navigate('/dashboard/user/profile')}
+                        >
+                            Update Address
+                        </button>
+                    </div>
+                ) : (
+                    <button
+                        className="btn btn-warning"
+                        onClick={() => navigate('/login')}
+                    >
+                        Please Login To Checkout
+                    </button>
+                )}
+
+                {clientToken ? (
+                    <div className="mt-4">
+                        <DropIn
+                            options={{
+                                authorization: clientToken,
+                                paypal: { flow: "vault" },
+                            }}
+                            onInstance={(instance) => setInstance(instance)}
+                        />
+                        <button
+                            className="btn btn-success w-100"
+                            disabled={loading || !instance}
+                            onClick={handlePayment}
+                        >
+                            {loading ? "Processing..." : "Make Payment"}
+                        </button>
+                    </div>
+                ) : (
+                    <h1 className="text-center">Loading payment...</h1>
+                )}
+
+                { auth?.user ? (
+                <button
+                    className="btn btn-primary mt-3 w-100"
+                    disabled={loading || !instance}
+                    onClick={handlePaymentDelivery}
+                >
+                    {loading ? "Processing..." : "Pay On Delivery"}
+                </button>
+                ):(
+                    <button
+                    className="btn btn-primary mt-3 w-100"
+                    disabled={loading || !instance}
+                    onClick={()=>navigate(`/Commander`)}
+                >
+                    Commander
+                </button>
+                )}
             </div>
-        </Layout>
-    );
+        </div>
+    </div>
+</div>
+
+</Layout> )
 };

@@ -14,6 +14,8 @@ const ProductDetails = () => {
     const navigate = useNavigate(); // Use useNavigate hook
     const [cart, setCart] = useCart([]);
     const { prodsList } = useProds();
+    const [color, setColor] = useState('');
+    const [size, setSize]= useState('')
 
     const getProduct = async () => {
         try {
@@ -49,7 +51,7 @@ const ProductDetails = () => {
         if (existingItem) {
             // If the item exists, update the quantity
             const updatedCart = cart.map(p =>
-                p._id === pid ? { ...p, quantity: p.quantity + 1 } : p
+                p._id === pid ? { ...p, quantity: p.details.length  } : p
             );
             setCart(updatedCart); // Set the updated cart with increased quantity
         } else {
@@ -88,18 +90,62 @@ const ProductDetails = () => {
                             <p className="text-muted mb-4">{prod?.description}</p>
                             <h4 className="text-primary mb-3">Price: ${prod?.price}</h4>
                             <h5 className="text-secondary mb-4">Category: {prod?.category?.name ? prod.category.name : "No category"}</h5>
-                            <div>
-                                <div>
-                                    {prod?.details.map((d, i)=>(
-                                        <h1 key={i}>{d.color}</h1>
-                                    ))}
-                                </div>
-                                <div>
-                                     {prod?.details.map((d, i)=>(
-                                        <h1 key={i}>{d.size}</h1>
-                                    ))}
-                                </div>
-                            </div>
+                            <div style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+  {/* Size Select */}
+  <div style={{ flex: 1 }}>
+    <label htmlFor="size-select" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+      Select Size
+    </label>
+    <select
+      id="size-select"
+      value={size}
+      onChange={(e) => setSize(e.target.value)}
+      style={{
+        width: '100%',
+        padding: '10px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        backgroundColor: '#f9f9f9',
+        fontSize: '16px',
+      }}
+    >
+      <option value="">-- Select Size --</option>
+      {prod?.details?.map((detail, index) => (
+        <option key={index} value={detail.size}>
+          {detail.size}
+        </option>
+      ))}
+    </select>
+  </div>
+
+  {/* Color Select */}
+  <div style={{ flex: 1 }}>
+    <label htmlFor="color-select" style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+      Select Color
+    </label>
+    <select
+      id="color-select"
+      value={color}
+      onChange={(e) => setColor(e.target.value)}
+      style={{
+        width: '100%',
+        padding: '10px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+        backgroundColor: '#f9f9f9',
+        fontSize: '16px',
+      }}
+    >
+      <option value="">-- Select Color --</option>
+      {prod?.details?.map((d, i) => (
+        <option key={i} value={d.color}>
+          {d.color}
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
                             
                             <button className="btn btn-secondary btn-lg" 
                                 onClick={() => AddToChart(prod?._id)} // Pass the product ID

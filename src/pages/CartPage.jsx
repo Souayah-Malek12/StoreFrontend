@@ -6,6 +6,7 @@ import {  useNavigate } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Checkbox } from "antd";
 
 
 export const CartPage = () => {
@@ -16,6 +17,46 @@ export const CartPage = () => {
     const [loading, setLoading] = useState(false);
     const [total , setTotal] = useState(0)
     const navigate = useNavigate();
+    const [open , setOpen]= useState(false);
+    const [name, setNom] = useState('');
+    const [prenom, setPrenom] = useState('');
+    const [adr, setAdr] = useState('')
+    const [tel, setTel] = useState('')
+
+
+
+    const handleOpenFom =()=>{
+        setOpen(true);
+    }
+    const handleCloseForm =()=>{
+        setNom('');
+        setPrenom('')
+        setAdr('')
+        setTel('')
+        setOpen(!open);
+    }
+
+    const handleFormSubmit = async(e)=>{
+        try{
+            e.preventDefault();
+            const response = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/passagerCommand`,{
+                name, adr ,tel , cart
+            });
+            const data = response.data;
+            if(data?.success){
+                toast.success(data?.message)
+            }
+
+           setNom('');
+           setPrenom('')
+           setAdr('')
+           setTel('')
+           toast.success(`Commande passée avec succée Montant : ${total} `);
+        }catch(err){
+            console.log(err);
+            toast.error('Essayé une autre fois');
+        }
+    }
 
     const totalPrice = () => {
          const tot = cart.reduce((total, p) => total + p.price * p.quantity, 0).toFixed(2);
@@ -109,7 +150,7 @@ export const CartPage = () => {
                 {auth?.user ? `Hello ${auth?.user?.email.split('@')[0]}` : "Welcome User"}
             </h1>
             <h4 className="mb-4">
-                {cart.length > 0 ? `You have ${cart.length} unique items` : `Your cart is empty`}
+                {cart.length > 0 ? `You have ${cart.length}  items` : `Your cart is empty`}
                 {auth?.token ? "" : " - Please Login"}
             </h4>
         </div>
@@ -164,7 +205,7 @@ export const CartPage = () => {
                                 </div>
                             </div>
                             <button
-                                className="btn btn-danger mt-3"
+                                className="btn btn-secondary mt-3"
                                 style={{ width: "max-content" }}
                                 onClick={() => removeItemFromCart(p._id)}
                             >
@@ -235,13 +276,105 @@ export const CartPage = () => {
                     {loading ? "Processing..." : "Pay On Delivery"}
                 </button>
                 ):(
-                    <button
-                    className="btn btn-primary mt-3 w-100"
-                    disabled={loading || !instance}
-                    onClick={()=>navigate(`/Commander`)}
-                >
-                    Commander
-                </button>
+                    <div>
+                        <button
+                        className="btn btn-primary mt-3 w-100"
+                        disabled={loading || !instance}
+                        onClick={handleOpenFom}
+                        >
+                        Commander Maintenant
+                        </button>
+                        {
+                            open &&  (
+                                <div
+                                className="modal fade show"
+                                style={{ display: "block", background: "rgba(0,0,0,0.5)" }}
+                            >
+                                <div className="modal-dialog">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">Entrer vos informations</h5>
+                                            <button
+                                                type="button"
+                                                className="btn-close"
+                                                onClick={handleCloseForm}
+                                            ></button>
+                                        </div>
+                                        <div className="modal-body">
+                                            <form onSubmit={handleFormSubmit}>
+                                                <div className="mb-3">
+                                                    <label htmlFor="nom" className="form-label">
+                                                        Nom
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="nom"
+                                                        required
+                                                        value={name}  name="nom"
+                                                        onChange={(e)=>setNom(e.target.value)}
+
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="prenom" className="form-label">
+                                                        Prénom
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="prenom"
+                                                        required
+                                                        value={prenom} name="prenom"
+                                                        onChange={(e)=>setPrenom(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="adresse" className="form-label">
+                                                        Adresse
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="form-control"
+                                                        id="adresse"
+                                                        required
+                                                        value={adr} name="adresse"
+                                                        onChange={(e)=>setAdr(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <label htmlFor="numTel" className="form-label">
+                                                        Numéro de Téléphone
+                                                    </label>
+                                                    <input
+                                                        type="tel"
+                                                        className="form-control"
+                                                        id="numTel"
+                                                        required
+                                                        value={tel} name="télephone"
+                                                        onChange={(e)=>setTel(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className="mb-3">
+                                                    <Checkbox required >
+                                                        <h1 style={{ color: "gray", fontSize: "12px", fontWeight: "semi-bold", textAlign: "center", margin: "10px 0"}}
+                                                        >je confirme ce monatnt ${total} dt</h1>
+                                                    </Checkbox>
+                                                </div>
+                                                <button
+                                                    type="submit"
+                                                    className="btn btn-success w-100"
+                                                >
+                                                    Confirmer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            )
+                        }
+                </div>
                 )}
             </div>
         </div>

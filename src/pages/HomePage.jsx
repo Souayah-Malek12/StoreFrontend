@@ -6,6 +6,8 @@ import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices"; // Ensure Prices is an array
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/Cart";
+import { FaFilter, FaTimes } from "react-icons/fa"; 
+
 
 const HomePage = () => {
   const [cart, setCart] = useCart([])
@@ -16,6 +18,7 @@ const HomePage = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showFilter, setShowFilter] = useState(false)
   const navigate = useNavigate();
 
   // Fetch all products
@@ -165,11 +168,26 @@ const HomePage = () => {
     }
   }, [checked, radio]);
   
-
+  const filterHidden = ()=>{
+    setShowFilter(!showFilter)
+  }
   return (
     <Layout title={"All Products - Best Offer"}>
       <div className="row">
-        {/* Filter by Category */}
+      <button onClick={filterHidden} className="btn btn-secondary mb-3 d-flex align-items-center">
+      
+      {showFilter ? (
+        <>
+          <FaTimes className="me-2" /> Hide Filters
+        </>
+      ) : (
+        <>
+          <FaFilter className="me-2" /> Show Filters
+        </>
+      )}
+    </button>
+        {showFilter &&  (
+        
         <div className="col-md-3">
           <h4 className="text-center">Filter By Category</h4>
           <div className="d-flex flex-column">
@@ -183,7 +201,7 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* Filter by Price */}
+          
           <h4 className="text-center mt-4">Filter By Price</h4>
           <div className="d-flex flex-column">
             <Radio.Group onChange={(e) => setRadio(e.target.value)}>
@@ -199,8 +217,8 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* Product Display */}
-        <div className="col-md-9">
+        )}
+        <div className="col-md-9 ">
           <h1 className="text-center">All products ({total})</h1>
           <div className="d-flex flex-wrap">
             {prods.map((p) => (

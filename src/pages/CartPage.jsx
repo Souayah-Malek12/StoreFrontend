@@ -64,20 +64,31 @@ export const CartPage = () => {
          
     };
 
+    
     const removeItemFromCart = (pid) => {
-        const existingItem = cart.find(p => p._id === pid);
-        if (existingItem) {
-            if (existingItem.quantity > 1) {
-                const updatedCart = cart.map((p) => 
-                    p._id === pid ? { ...p, quantity: p.quantity - 1 } : p
-                );
-                setCart(updatedCart);
-            } else {
-                const updatedCart = cart.filter(p => p._id !== pid);
-                setCart(updatedCart);
-            }
+    const existingItem = cart.find((p) => p._id === pid);
+    if (existingItem) {
+        if (existingItem.quantity > 1) {
+            const updatedCart = cart.map((p) => {
+                if (pid === p._id) {
+                    const updatedDetails = p.details.map((detail) =>
+                        detail.quantities > 0
+                            ? { ...detail, quantities: detail.quantities - 1 }
+                            : detail
+                    );
+                    return { ...p, quantity: p.quantity - 1, details: updatedDetails };
+                }
+                return p;
+            });
+            setCart(updatedCart);
+            
+        } else {
+            const updatedCart = cart.filter((p) => p._id !== pid);
+            setCart(updatedCart);
         }
-    };
+    }
+};
+
 
     const getToken = async () => {
         try {
@@ -136,9 +147,12 @@ export const CartPage = () => {
         }
     };
 
+    useEffect(()=>{
+        totalPrice()
+    },[cart])
     useEffect(() => {
         getToken();
-        totalPrice();
+        
     }, [auth?.token]);
 
    return(

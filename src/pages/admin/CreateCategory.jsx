@@ -68,7 +68,7 @@ export const CreateCategory = () => {
         const {data} = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/category/create-category` , 
           {name}, {
             headers: {
-            Authorization: auth?.token // Ensure token is passed here
+            Authorization: auth?.token 
             }
           }
         );

@@ -25,6 +25,8 @@ import Profile from "./pages/user/Profile"
 import OrderList from "./pages/user/OrderList"
 import AdmProfile from "./pages/admin/AdmProfile"
 import CreateProduct from "./pages/admin/CreateProduct"
+import AdmOrders from "./pages/admin/AdmOrders"
+import UsersList from "./pages/admin/UsersList"
 
 
 function App() {
@@ -51,6 +53,9 @@ function App() {
             <Route path='admin/createproduct' element ={<CreateProduct />} />
             <Route path='admin/Products' element={<Products/>} />
             <Route path='admin/Products/:slug' element={ <UpdateProduct />} />
+            <Route path='admin/allOrders' element={ <AdmOrders />} />
+            <Route path='admin/users' element={ <UsersList />} />
+
         </Route>
 
         <Route path='nav/orders' element={<OrderList />} />

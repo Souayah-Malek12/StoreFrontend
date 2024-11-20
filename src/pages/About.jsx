@@ -1,5 +1,5 @@
 import Layout from "../components/Layouts/Layout"
-import img from "../images/FB_IMG_1727343737907.jpg"
+import img from "../ImageFolder/images/FB_IMG_1727343737907.jpg"
 
 export const About = () => {
   return (

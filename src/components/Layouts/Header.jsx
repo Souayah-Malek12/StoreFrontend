@@ -1,12 +1,12 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import img1 from "../../images/FB_IMG_1727343737907.jpg"; // Check if this path is correct
+import img1 from "../../ImageFolder/images/FB_IMG_1727343737907.jpg"; // Check if this path is correct
 import { useAuth } from "../../context/auth";
 import { Badge } from "antd";
 import toast from "react-hot-toast";
 import { SearchInput } from "../Form/SearchInpput"; // Ensure this path is correct
 import { useCategory } from "../../hooks/useCategory"; // Ensure this path is correct
 import { useCart } from "../../context/Cart"; // Ensure this path is correct
-
+import "./Header.css"
 const Header = () => {
   const [auth, setAuth] = useAuth();
   const [cart] = useCart();

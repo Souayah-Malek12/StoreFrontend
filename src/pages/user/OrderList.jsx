@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import Layout from "../../components/Layouts/Layout";
 import UserMenu from "../../components/Layouts/UserMenu";
@@ -31,6 +32,7 @@ const OrderList = () => {
 
   useEffect(()=>{
     if(auth?.token) getOrders();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[auth?.token]);
 
   return (

@@ -49,51 +49,31 @@ const AdmOrders = () => {
                 <th>Phone</th>
                 <th>Payment</th>
                 <th>Status</th>
-                <th>Products</th>
-                <th>Details</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Color</th> 
+                <th>Size</th>
                 <th>Created At</th>
               </tr>
             </thead>
             <tbody>
               {orders?.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>{order?.buyerString || order?.buyer?.name}</td>
-                  <td>{order?.addresse || order?.buyer?.address}</td>
-                  <td>{order?.buyerPhone || order?.buyer?.phone}</td>
-                  <td>{order?.payment || 'N/A'}</td>
-                  <td>{order?.status || 'N/A'}</td>
-                  <td>
-                    <table className="table table-sm">
-                      <tbody>
-                        {order?.products?.map((p, index) => (
-                          <tr key={index}>
-                            <td>{p.name  }</td>
-                            <td>{p.price || 'N/A'}</td>
-                            <td>{p.quantity || 'N/A'}</td>
-                            <td>{p.status || 'N/A'}</td>
-                            <td>{p.buyerPhone || 'N/A'}</td>
-                          </tr>
-                        ))}
-                        
-                      </tbody>
-                    </table>
-                  </td>
-                  <td>
-                    {order?.products?.map((p, index) => (
-                      <div key={index}>
-                        {p?.details?.map((d, detailIndex) => (
-                          <div key={detailIndex}>
-                            <p>Color: {d.color || 'N/A'}</p>
-                            <p>Size: {d.size || 'N/A'}</p>
-                            <p>Quantities: {d.quantities || 'N/A'}</p>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </td>
-                  <td>{new Date(order?.createdAt).toLocaleDateString() || 'N/A'}</td>
-                </tr>
+                // Loop through each order
+                order?.products?.map((product, index) => (
+                  <tr key={`${order._id}-${product._id}`}>
+                    <td>{order._id}</td>
+                    <td>{order?.buyer || order?.buyer?.buyer}</td>
+                    <td>{order?.addresse || order?.buyer?.address}</td>
+                    <td>{order?.buyerPhone || order?.buyer?.phone}</td>
+                    <td>{order?.payment || 'N/A'}</td>
+                    <td>{order?.status || 'N/A'}</td>
+                    <td>{product?._id || 'N/A'}</td>
+                    <td>{product?.name || 'N/A'}</td>
+                    <td>{product?.color || 'N/A'}</td>
+                    <td>{product?.size || 'N/A'}</td>
+                    <td>{new Date(order?.createdAt).toLocaleDateString() || 'N/A'}</td>
+                  </tr>
+                ))
               ))}
             </tbody>
           </table>

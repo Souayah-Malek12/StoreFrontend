@@ -39,8 +39,12 @@ export const CartPage = () => {
     const handleFormSubmit = async(e)=>{
         try{
             e.preventDefault();
+            let name = auth?.user ? auth?.user?.userName : name; // Use authenticated name if available
+            let prenom = auth?.user ? auth?.user?.userName : prenom; // Use authenticated prenom if available
+            let adr = auth?.user ? auth?.user?.address : adr; // Use authenticated address if available
+            let tel = auth?.user ? auth?.user?.phone : tel;
             const response = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/passagerCommand`,{
-                name, adr ,tel , cart
+                name, tel, adr , cart, total
             });
             const data = response.data;
             if(data?.success){
@@ -59,10 +63,12 @@ export const CartPage = () => {
     }
 
     const totalPrice = () => {
-         const tot = cart.reduce((total, p) => total + p.price * p.quantity, 0).toFixed(2);
-         setTotal(tot)
-         
-    };
+            
+         const tot = cart.reduce((Tot, prod)=>{
+            return Tot +  prod.price * prod.quantity;
+         },0)
+            setTotal(tot)
+        };
 
     
     const removeItemFromCart = (pid) => {
@@ -70,7 +76,7 @@ export const CartPage = () => {
     if (existingItem) {
         if (existingItem.quantity > 1) {
             const updatedCart = cart.map((p) => {
-                if (pid === p._id) {
+                if (pid === p._id) {    
                     const updatedDetails = p.details.map((detail) =>
                         detail.quantities > 0
                             ? { ...detail, quantities: detail.quantities - 1 }
@@ -100,22 +106,7 @@ export const CartPage = () => {
     };
     
 
-    const handlePaymentDelivery = async()=>{
-        try{
-            const {data} = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/payOnDeliver`,{
-                cart , 
-            } ,{
-                headers : {
-                    authorization : auth?.token
-                }
-            })
-            if(data?.success){
-                toast.success("order accepted");
-            }
-        }catch(error){
-            console.log(error);
-        }
-    }
+    
 
     const handlePayment = async () => {
         if (!instance) {
@@ -150,6 +141,7 @@ export const CartPage = () => {
     useEffect(()=>{
         totalPrice()
     },[cart])
+
     useEffect(() => {
         getToken();
         
@@ -281,15 +273,9 @@ export const CartPage = () => {
                     <h1 className="text-center">Loading payment...</h1>
                 )}
 
-                { auth?.user ? (
-                <button
-                    className="btn btn-primary mt-3 w-100"
-                    disabled={loading || !instance}
-                    onClick={handlePaymentDelivery}
-                >
-                    {loading ? "Processing..." : "Pay On Delivery"}
-                </button>
-                ):(
+                
+                
+                
                     <div>
                         <button
                         className="btn btn-primary mt-3 w-100"
@@ -325,7 +311,7 @@ export const CartPage = () => {
                                                         className="form-control"
                                                         id="nom"
                                                         required
-                                                        value={name}  name="nom"
+                                                        value={auth?.user ? auth?.user?.userName : name  }  
                                                         onChange={(e)=>setNom(e.target.value)}
 
                                                     />
@@ -339,7 +325,7 @@ export const CartPage = () => {
                                                         className="form-control"
                                                         id="prenom"
                                                         required
-                                                        value={prenom} name="prenom"
+                                                        value={auth?.user ?auth?.user?.userName :  prenom  } 
                                                         onChange={(e)=>setPrenom(e.target.value)}
                                                     />
                                                 </div>
@@ -352,7 +338,7 @@ export const CartPage = () => {
                                                         className="form-control"
                                                         id="adresse"
                                                         required
-                                                        value={adr} name="adresse"
+                                                        value={auth?.user ? auth?.user.address : adr} 
                                                         onChange={(e)=>setAdr(e.target.value)}
                                                     />
                                                 </div>
@@ -365,7 +351,7 @@ export const CartPage = () => {
                                                         className="form-control"
                                                         id="numTel"
                                                         required
-                                                        value={tel} name="télephone"
+                                                        value={auth?.user ? auth?.user?.phone : tel} 
                                                         onChange={(e)=>setTel(e.target.value)}
                                                     />
                                                 </div>
@@ -389,7 +375,7 @@ export const CartPage = () => {
                             )
                         }
                 </div>
-                )}
+                
             </div>
         </div>
     </div>

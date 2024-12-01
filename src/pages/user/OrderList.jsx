@@ -12,14 +12,19 @@ const OrderList = () => {
   const [auth ] = useAuth();
   const [amount, setAmount] = useState("");
   const [total, setTotal] = useState("");
-
+  
+  const bName = auth?.user?.userName;
+  console.log(bName)
   const getOrders = async()=>{
     try{
-      const {data} = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/auth/orders`,{
+      const {data} = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/auth/orders/${bName}`,
+        
+        {
         headers :{
           authorization : auth?.token
         }
       });
+      console.log(data)
       if(data?.success){
         setOrdes(data?.orders);
         setAmount(data?.totals?.totalAmount);
@@ -44,7 +49,7 @@ const OrderList = () => {
           </div>
           <div className="col-md-9">
             <h1 className="text-center" style={{ marginBottom: "20px", fontWeight: "bold" }}>
-              All Orders ({total})
+              All Orders (<span style={{color: "red" ,fontWeight : "500"}} >{amount}</span> <span style={{color: "green"}}>dt</span>)
             </h1>
             {
               orders?.map((o, i) => (
@@ -64,7 +69,7 @@ const OrderList = () => {
                       <tr style={{ fontWeight: "500" }}>
                         <td>{i + 1}</td>
                         <td>{o?.status}</td>
-                        <td>{o?.buyer?.name}</td>
+                        <td>{o?.buyer}</td>
                         <td>{moment(o?.createdAt).fromNow()}</td>
                         <td>{o?.payment?.Success ? "Success" : "Pending"}</td>
                         <td>{o?.products?.length}</td>
@@ -73,24 +78,23 @@ const OrderList = () => {
                   </table>
 
                   <div className="container p-3">
-                    {o?.products.map((p) => (
-                      <div key={p._id} className="row mb-2" style={{ borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                        <div className="col-md-4 d-flex align-items-center">
-                          <img
-                            src={p.photo}
-                            alt={`${p.name} picture`}
-                            style={{ height: "100px", width: "80px", borderRadius: "5px", objectFit: "cover", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className="col-md-8">
-                          <h5 style={{ marginBottom: "5px", fontWeight: "bold" }}>{p.name}</h5>
-                          <p style={{ marginBottom: "5px", color: "#555" }}>{p.description}...</p>
-                          <h6 style={{ color: "#28a745", fontWeight: "bold" }}>{p.price} dt</h6>
-                          <p style={{ marginBottom: "0" }}>Quantity: {p.quantity}</p>
-                        </div>
-                      </div>
-                    ))}
+                    { o?.products?.map((p) => (
+  <div key={p._id} className="row mb-2" style={{ borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+    <div className="col-md-4 d-flex align-items-center">
+      <img
+        src={p.photo || "https://via.placeholder.com/80"} // Fallback placeholder image
+        alt={`${p.name} picture`}
+        style={{ height: "100px", width: "80px", borderRadius: "5px", objectFit: "cover", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
+        loading="lazy"
+      />
+    </div>
+    <div className="col-md-8">
+      <h5 style={{ marginBottom: "5px", fontWeight: "bold", color: "brown" }}>{p.color}</h5>
+      <p style={{ marginBottom: "5px", color: "blue" }}>{p.size}...</p>
+    </div>
+  </div>
+))}
+
                   </div>
                 </div>
               ))

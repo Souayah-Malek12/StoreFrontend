@@ -8,7 +8,25 @@ import toast from 'react-hot-toast';
 const AdmOrders = () => {
   const [auth] = useAuth();
   const [orders, setOrders] = useState([]);
+  const [id, setId] = useState(null);
+  console.log(id)
 
+  const handleCommande =async()=>{
+    try{
+      const response = await axios.put(`${import.meta.env.VITE_APP_API}/api/v1/product/treatOrder/`,{id} ,{
+        headers: {
+          authorization: auth?.token,
+        },
+      });
+      const data = response.data;
+      
+      if (data?.success) {
+        toast.success('Order Treated');
+    }}catch(err){
+      console.error(err.message);
+      toast.error('Error while treating  order');
+    }
+  }
   const getAllOrders = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/auth/AllOrders`, {
@@ -32,6 +50,9 @@ const AdmOrders = () => {
     getAllOrders();
   }, [auth?.token]);
 
+  useEffect(()=>{
+    handleCommande()
+  },[id])
   return (
     <Layout title={'Orders'}>
       <div className="row">
@@ -61,12 +82,12 @@ const AdmOrders = () => {
                 // Loop through each order
                 order?.products?.map((product, index) => (
                   <tr key={`${order._id}-${product._id}`}>
-                    <td>{order._id}</td>
+                    <td ><button onClick={()=>setId(order._id)}>{order._id}</button></td>
                     <td>{order?.buyer || order?.buyer?.buyer}</td>
                     <td>{order?.addresse || order?.buyer?.address}</td>
                     <td>{order?.buyerPhone || order?.buyer?.phone}</td>
                     <td>{order?.payment || 'N/A'}</td>
-                    <td>{order?.status || 'N/A'}</td>
+                    <td ><span style={{color: "red"}}>{order?.status || 'N/A'}</span></td>
                     <td>{product?._id || 'N/A'}</td>
                     <td>{product?.name || 'N/A'}</td>
                     <td>{product?.color || 'N/A'}</td>

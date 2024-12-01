@@ -340,12 +340,6 @@ import vid1 from "../video/vid1.mp4"
                   >
                     More Details
                   </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => AddToChart(p._id)}
-                  >
-                    Add To Cart
-                  </button>
                 </div>
               </div>
             </div>

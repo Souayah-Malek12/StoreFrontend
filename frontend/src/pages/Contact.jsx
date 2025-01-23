@@ -24,7 +24,7 @@ import Layout from "../components/Layouts/Layout"
             <BiPhoneCall /> : 012-3456789
           </p>
           <p className="mt-3">
-            <BiSupport /> : +21654023965 (toll free)
+            <BiSupport /> : +21654023965 (free call)
           </p>
         </div>
       </div> 

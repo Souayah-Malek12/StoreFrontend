@@ -13,9 +13,12 @@ const ProductDetails = () => {
     const params = useParams();
     const navigate = useNavigate(); // Use useNavigate hook
     const [cart, setCart] = useCart([]);
-    const { prodsList } = useProds();
+    useProds();
     const [color, setColor] = useState('');
     const [size, setSize]= useState('')
+    const [quantities]= useState(0)
+
+    
 
     const getProduct = async () => {
         try {
@@ -47,23 +50,22 @@ const ProductDetails = () => {
     const AddToChart = (pid) => {
         const existingItem = cart.find(p => p._id === pid);
         
-
+        if(color && size)
+{
         if (existingItem) {
             // If the item exists, update the quantity
             const updatedCart = cart.map(p =>
-                p._id === pid ? { ...p, quantity: p.details.length  } : p
+                p._id === pid ? { ...p, quantity: p.quantity+1, details : [...p.details , {color, size, quantities : 1} ] } : p
             );
             setCart(updatedCart); // Set the updated cart with increased quantity
         } else {
             // If the item does not exist, find the product and add it to the cart
-            const productToAdd = prodsList.find(p => p._id === pid);
-            if (productToAdd) {
-                setCart([...cart, { ...productToAdd, quantity: 1 }]); // Add new product with quantity 1
-            } else {
-                console.error("Product not found in prodsList.");
-            }
+            
+                setCart([...cart, { ...prod, quantity: 1, details: [{color : color, size: size, quantities: quantities+1}]}]); // Add new product with quantity 1
+               
         }
     };
+}
 
     useEffect(() => {
             getProduct();

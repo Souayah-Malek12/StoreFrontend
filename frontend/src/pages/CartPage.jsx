@@ -39,9 +39,9 @@ export const CartPage = () => {
     const handleFormSubmit = async(e)=>{
         try{
             e.preventDefault();
-            let name = auth?.user ? auth?.user?.userName : name; // Use authenticated name if available
-            let prenom = auth?.user ? auth?.user?.userName : prenom; // Use authenticated prenom if available
-            let adr = auth?.user ? auth?.user?.address : adr; // Use authenticated address if available
+            let name = auth?.user ? auth?.user?.userName : name; 
+            let prenom = auth?.user ? auth?.user?.userName : prenom; 
+            let adr = auth?.user ? auth?.user?.address : adr; 
             let tel = auth?.user ? auth?.user?.phone : tel;
             const response = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/passagerCommand`,{
                 name, tel, adr , cart, total
@@ -77,12 +77,13 @@ export const CartPage = () => {
         if (existingItem.quantity > 1) {
             const updatedCart = cart.map((p) => {
                 if (pid === p._id) {    
+                    // eslint-disable-next-line no-unused-vars
                     const updatedDetails = p.details.map((detail) =>
                         detail.quantities > 0
                             ? { ...detail, quantities: detail.quantities - 1 }
                             : detail
                     );
-                    return { ...p, quantity: p.quantity - 1, details: updatedDetails };
+                    return { ...p, quantity: p.quantity - 1, details: (p.details.pop(), p.details) };
                 }
                 return p;
             });

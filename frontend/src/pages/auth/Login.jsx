@@ -10,9 +10,9 @@ export const Login = () => {
 
     const [email , setEmail] = useState("");
     const [password, setPassword] = useState(" ");
-    const [auth, setAuth]= useState()
+    const [auth, setAuth]= useAuth()
     const location = useLocation();
-
+    
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -33,7 +33,7 @@ export const Login = () => {
                 // Update global auth state
                 setAuth({
                     user: res.data.user,
-                    privateToken: res.data.token
+                    token: res.data.token
                 });
     
                 // Save auth data to localStorage for persistence

@@ -10,7 +10,7 @@ export const AdminRoute = () => {
     const [ok , setOk] = useState(false);
     // eslint-disable-next-line no-unused-vars
     const [auth, setAuth] = useAuth()
-
+    // console.log(import.meta.env.VITE_APP_API)
 
     useEffect(()=> {
 

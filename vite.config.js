@@ -8,7 +8,7 @@ export default defineConfig(({ command, mode }) => {
   
   return {
     plugins: [react()],
-    base: env.NODE_ENV === 'production' ? '/StoreFrontend/' : '/',
+    base: '/StoreFrontend/',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',

@@ -9,7 +9,7 @@ import Registre from "./pages/auth/Registre"
 import 'antd/dist/reset.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { Login } from "./pages/auth/Login"
-import Dashboard from "./pages/user/dashboard"
+import Dashboard from "./pages/user/Dashboard"
 import { Private } from "./components/Routes/Private"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminRoute from "./components/Routes/AdminRoutes"

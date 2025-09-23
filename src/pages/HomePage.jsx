@@ -1,7 +1,7 @@
   import { useEffect, useState } from "react";
 import Layout from "../components/Layouts/Layout";
-import axios from "axios";
 import toast from "react-hot-toast";
+import api from "../config/axios";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices"; // Ensure Prices is an array
 import { useNavigate } from "react-router-dom";
@@ -98,17 +98,15 @@ const HomePage = () => {
   // Fetch all categories
   const getAllCategories = async () => {
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_API}/api/v1/category/findAll`
-      );
+      const { data } = await api.get('/api/v1/category/findAll');
       if (data?.success) {
-        setCategories(data.category);
+        setCategories(data.category || []);
       } else {
         toast.error("Failed to fetch categories");
       }
     } catch (error) {
+      console.error("Error fetching categories:", error);
       toast.error("Something went wrong when fetching categories");
-      console.log(error);
     }
   };
 

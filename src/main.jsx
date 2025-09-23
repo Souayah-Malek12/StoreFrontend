@@ -7,6 +7,7 @@ import { AuthProvider } from './context/auth.jsx';
 import { SearchProvider } from './context/search.jsx';
 import { CartProvider } from './context/Cart.jsx';
 import { ProdsProvider } from './context/prods.jsx';
+import './config/axios'; // Import axios configuration
 
 createRoot(document.getElementById('root')).render(
     <AuthProvider>

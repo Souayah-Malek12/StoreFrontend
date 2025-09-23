@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import AdminMenu from '../../components/Layouts/AdminMenu';
 import Layout from '../../components/Layouts/Layout';
 import toast from 'react-hot-toast';
-import axios from 'axios';
+import api from '../../config/axios';
 import { Select, Button } from 'antd'; 
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/auth';
@@ -30,11 +30,11 @@ export const UpdateProduct = () => {
 
   
   const deleteProduct = async()=> {
-    let answer = window.prompt('Are you sure want delete this product ')
+    let answer = window.prompt('Are you sure you want to delete this product?')
     if(answer === "yes") {
-      const response = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/product/delete/${Id}`,{
+      const response = await api.delete(`/product/delete/${Id}`,{
         headers: {
-        Authorization: auth?.token // Ensure token is passed here
+          Authorization: auth?.token
         }
       })
       const data = response.data
@@ -119,19 +119,15 @@ export const UpdateProduct = () => {
 
   const getAllCategories = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/category/findAll`);
-      const data = response.data;
-
+      const { data } = await api.get('/category/findAll');
       if (data?.success) {
-        setCategories(data?.category);
-
-        
+        setCategories(data?.category || []);
       } else {
         toast.error("Failed to fetch categories");
       }
     } catch (error) {
+      console.error('Error fetching categories:', error);
       toast.error('Something went wrong while fetching categories');
-      console.log(error);
     }
   };
 

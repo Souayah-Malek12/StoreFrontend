@@ -1,21 +1,22 @@
-import axios from "axios"
 import { useEffect, useState } from "react";
+import api from "../config/axios";
 
 export const useCategory = () => {
-    
-    const [result, setResult] = useState([])
+    const [result, setResult] = useState([]);
 
-    const getCategories = async()=> {
-        try{
-            const {data} = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/category/findAll`);
-            setResult(data?.category)
-        }catch(error){
-            console.log("Error in useCategory hook", error)
+    const getCategories = async () => {
+        try {
+            const { data } = await api.get('/api/v1/category/findAll');
+            setResult(data?.category || []);
+        } catch (error) {
+            console.error("Error in useCategory hook:", error);
+            setResult([]);
         }
-    }
+    };
 
-    useEffect(()=> {
+    useEffect(() => {
         getCategories();
-    },[])
-  return result;
-}
+    }, []);
+
+    return result;
+};

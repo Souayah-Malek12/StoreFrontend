@@ -1,5 +1,5 @@
-import axios from "axios";
-import { useState, useContext, createContext, useEffect } from "react";
+import { useState, createContext, useEffect } from "react";
+import api from "../config/axios";
 
 // Create the products context
 const ProdsContext = createContext();
@@ -12,14 +12,14 @@ const ProdsProvider = ({ children }) => {
   // Function to fetch all products
   const getAllProducts = async () => {
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_API}/api/v1/product/getProducts`
-      );
+      const { data } = await api.get('/api/v1/product/getProducts');
       if (data?.success) {
-        setProdsList(data.products);
+        setProdsList(data.products || []);
+      } else {
+        console.error('Failed to fetch products:', data?.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching products:', error);
     }
   };
 

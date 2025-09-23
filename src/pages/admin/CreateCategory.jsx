@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import Layout from '../../components/Layouts/Layout';
-import axios from "axios";
+import api from '../../config/axios';
 import { useEffect, useState } from "react";
 import AdminMenu from "../../components/Layouts/AdminMenu";
 import CategoryForm from "../../components/Form/CategoryForm";
@@ -17,9 +17,9 @@ export const CreateCategory = () => {
 
     const handleDelete = async(dId)=> {
       try{
-          const {data} = await axios.delete(`${import.meta.env.VITE_APP_API}/api/v1/category/delete/${dId}`,{
+          const {data} = await api.delete(`/category/delete/${dId}`,{
             headers: {
-            Authorization: auth?.token // Ensure token is passed here
+              Authorization: auth?.token
             }
           })
           if(data.success){

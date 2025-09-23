@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '../../config/axios';
 import Layout from '../../components/Layouts/Layout';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/auth';
@@ -23,19 +23,15 @@ const CreateProduct = () => {
 
     const getAllCategories = async () => {
         try {
-          const response = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/category/findAll`);
-          const data = response.data;
-    
+          const { data } = await api.get('/category/findAll');
           if (data?.success) {
-            setCategories(data?.category);
-    
-            
+            setCategories(data?.category || []);
           } else {
             toast.error("Failed to fetch categories");
           }
         } catch (error) {
+          console.error('Error fetching categories:', error);
           toast.error('Something went wrong while fetching categories');
-          console.log(error);
         }
       };
 

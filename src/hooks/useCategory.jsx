@@ -6,7 +6,7 @@ export const useCategory = () => {
 
     const getCategories = async () => {
         try {
-            const { data } = await api.get('/api/v1/category/findAll');
+            const { data } = await api.get('/category/findAll');
             setResult(data?.category || []);
         } catch (error) {
             console.error("Error in useCategory hook:", error);

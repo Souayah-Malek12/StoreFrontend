@@ -46,7 +46,7 @@ const HomePage = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_API}/api/v1/product/getProducts`
+        `${import.meta.env.VITE_APP_API}/product/getProducts`
       );
       if (data?.success) {
         setProds(data.products);
@@ -63,7 +63,7 @@ const HomePage = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/product/productList/${page}`);
+      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/product/productList/${page}`);
       if (data?.success) {
         const uniqueNewProducts = [...new Map([...prods, ...data.products].map(item => [item._id, item])).values()];
         setProds(uniqueNewProducts);
@@ -80,7 +80,7 @@ const HomePage = () => {
 
   const getTotal = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/api/v1/product/productCount`);
+      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/product/productCount`);
       if (data?.success) {
         setTotal(data?.total);
       }
@@ -130,7 +130,7 @@ const HomePage = () => {
 
   const filterProducts = async (page = 1) => {
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_APP_API}/api/v1/product/filterProducts`, {
+      const { data } = await axios.post(`${import.meta.env.VITE_APP_API}/product/filterProducts`, {
         checked,
         radio,
         page,  // Send the current page to the backend

@@ -12,7 +12,7 @@ const ProdsProvider = ({ children }) => {
   // Function to fetch all products
   const getAllProducts = async () => {
     try {
-      const { data } = await api.get('/api/v1/product/getProducts');
+      const { data } = await api.get('/product/getProducts');
       if (data?.success) {
         setProdsList(data.products || []);
       } else {

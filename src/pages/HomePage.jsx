@@ -1,14 +1,13 @@
   import { useEffect, useState } from "react";
 import Layout from "../components/Layouts/Layout";
 import toast from "react-hot-toast";
-import api from "../config/axios";
+import api from "../config/axios"; // Using configured axios instance
 import { Checkbox, Radio } from "antd";
-import { Prices } from "../components/Prices"; // Ensure Prices is an array
+import { Prices } from "../components/Prices";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/Cart";
-import { FaFilter, FaTimes } from "react-icons/fa"; 
-import { Input } from "antd"; // For search bar
-// eslint-disable-next-line no-unused-vars
+import { FaFilter, FaTimes } from "react-icons/fa";
+import { Input } from "antd";
 const { Search } = Input;
 import Img1 from "../ImageFolder/images/Imgs/i1.jpg"
 import Img2 from '../ImageFolder/images/Imgs/i2.jpg'
@@ -45,15 +44,13 @@ const HomePage = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_APP_API}/product/getProducts`
-      );
+      const { data } = await api.get('/product/getProducts');
       if (data?.success) {
         setProds(data.products);
       }
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching products:", error);
       toast.error("Failed to load products");
       setLoading(false);
     }
@@ -63,7 +60,7 @@ const HomePage = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/product/productList/${page}`);
+      const { data } = await api.get(`/product/productList/${page}`);
       if (data?.success) {
         const uniqueNewProducts = [...new Map([...prods, ...data.products].map(item => [item._id, item])).values()];
         setProds(uniqueNewProducts);
@@ -71,7 +68,7 @@ const HomePage = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.error(error);
+      console.error("Error loading more products:", error);
     }
   };
   
@@ -80,12 +77,12 @@ const HomePage = () => {
 
   const getTotal = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_APP_API}/product/productCount`);
+      const { data } = await api.get('/product/productCount');
       if (data?.success) {
         setTotal(data?.total);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error getting product count:", error);
     }
   };
 
@@ -98,7 +95,7 @@ const HomePage = () => {
   // Fetch all categories
   const getAllCategories = async () => {
     try {
-      const { data } = await api.get('/api/v1/category/findAll');
+      const { data } = await api.get('/category/findAll');
       if (data?.success) {
         setCategories(data.category || []);
       } else {
@@ -130,26 +127,26 @@ const HomePage = () => {
 
   const filterProducts = async (page = 1) => {
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_APP_API}/product/filterProducts`, {
+      const { data } = await api.post('/product/filterProducts', {
         checked,
         radio,
         page,  // Send the current page to the backend
       });
       if (data?.success) {
         if (page === 1) {
-          setProds(data?.products); // Reset products when filters are applied
+          setProds(data?.products || []); // Reset products when filters are applied
         } else {
-          setProds((prevProds) => [...prevProds, ...data.products]); // Append products when loading more
+          setProds((prevProds) => [...(prevProds || []), ...(data.products || [])]); // Append products when loading more
         }
-        setTotal(data?.total);
       } else {
-        setProds([]);
+        toast.error(data?.message || "Failed to apply filters");
       }
     } catch (error) {
-      toast.error("Something went wrong when filtering products");
-      console.log(error);
+      console.error("Error filtering products:", error);
+      toast.error("Failed to apply filters");
     }
   };
+
   const AddToChart = (pid) => {
     const existingItem = cart.find(p => p._id === pid);
   
